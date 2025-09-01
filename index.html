@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Receipts OCR — SUMA Total (Client‑side)</title>
+    <link rel="stylesheet" href="index.css" />
+    <!-- pdf.js (UMD/legacy for simpler worker setup) -->
+    <script src="https://unpkg.com/pdfjs-dist@3.10.111/build/pdf.js"></script>
+    <!-- tesseract.js v2 (stable API for worker pool) -->
+    <script src="https://unpkg.com/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Receipts OCR — SUMA Total</h1>
+      <div class="controls">
+        <label>
+          PDF File
+          <input id="fileInput" type="file" accept="application/pdf" />
+        </label>
+        <label>
+          Failed only
+          <input id="failedOnly" type="checkbox" />
+        </label>
+        
+        
+        
+        <button id="cancelBtn" disabled>Cancel</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="left">
+        <div class="step" id="step-progress">
+          <div class="step-header">
+            <span>Processing Pages</span>
+            <span class="eta" data-eta></span>
+          </div>
+          <div class="bar"><div class="fill" data-fill></div></div>
+          <div class="meta" data-meta>Waiting for file…</div>
+        </div>
+
+        <div class="logs">
+          <div class="logs-header">OCR Logs</div>
+          <div id="logList" class="log-list"></div>
+        </div>
+
+        <div class="totals">
+          <div><strong>Receipts:</strong> <span id="countReceipts">0</span></div>
+          <div><strong>Missing SUMA:</strong> <span id="countMissing">0</span></div>
+          <div class="grand">TOTAL SUMA: <span id="totalSum">0.00</span></div>
+          <div class="sum-bar bar"><div id="sumFill" class="fill"></div></div>
+        </div>
+
+        <div class="preview-header">
+          <span>Pages Feed</span>
+        </div>
+        <div id="feed" class="feed"></div>
+      </section>
+    </main>
+
+    <script>
+      // Configure pdf.js worker (legacy UMD build)
+      if (window['pdfjsLib']) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.10.111/build/pdf.worker.js';
+      }
+    </script>
+    <script defer src="index.js"></script>
+  </body>
+  </html>
