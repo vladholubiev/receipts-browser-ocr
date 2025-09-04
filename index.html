@@ -22,6 +22,8 @@
           Failed only
           <input id="failedOnly" type="checkbox" />
         </label>
+        <button id="processBtn">Process</button>
+        <button id="calibrateBtn">Calibrate SUMA</button>
         
         
         
@@ -65,6 +67,6 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.10.111/build/pdf.worker.js';
       }
     </script>
-    <script defer src="index.js"></script>
+    <script type="module" src="/src/main.js"></script>
   </body>
   </html>
