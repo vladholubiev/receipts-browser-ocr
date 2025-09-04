@@ -13,8 +13,8 @@
       // Expose for existing code using window.pdfjsLib
       window.pdfjsLib = pdfjsLib;
     </script>
-    <!-- tesseract.js v2 (stable API for worker pool) -->
-    <script src="https://unpkg.com/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
+    <!-- tesseract.js v6 -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@6/dist/tesseract.min.js"></script>
   </head>
   <body>
     <header>
@@ -48,10 +48,10 @@
           <div class="meta" data-meta>Waiting for file…</div>
         </div>
 
-        <div class="logs">
-          <div class="logs-header">OCR Logs</div>
+        <details class="logs" id="logDetails">
+          <summary class="logs-header">OCR Logs</summary>
           <div id="logList" class="log-list"></div>
-        </div>
+        </details>
 
         <div class="totals">
           <div><strong>Receipts:</strong> <span id="countReceipts">0</span></div>

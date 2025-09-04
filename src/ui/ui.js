@@ -79,8 +79,8 @@ export function createUI() {
     const div = document.createElement('div');
     div.className = 'log-line' + (highlight ? ' hl' : '');
     div.textContent = message;
-    logList.appendChild(div);
-    logList.scrollTop = logList.scrollHeight;
+    if (logList.firstChild) logList.insertBefore(div, logList.firstChild);
+    else logList.appendChild(div);
   }
 
   function addSumLog(amount, line) {
@@ -163,4 +163,3 @@ export function createUI() {
     appendFeedPost,
   };
 }
-
