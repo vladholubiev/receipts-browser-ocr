@@ -1,5 +1,5 @@
 *
 !index.html
-!index.css
+!styles.css
 !./src/**/*.js
 !.gitignore
