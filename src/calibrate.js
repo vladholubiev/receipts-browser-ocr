@@ -1,5 +1,5 @@
 import { SUMA_BASE_W, SUMA_STRIP_HEIGHT_PX, SUMA_PSM, SUMA_WHITELIST } from './config.js';
-import { loadPDF, renderPageToCanvasWithBoxes, extractImageBoxesFromPage } from './pdf/capture.js';
+import { loadPDF, renderPageToCanvasWithBoxes } from './pdf/capture.js';
 import { cropCanvas, preprocessForOCR, cropSumaStripFromReceipt } from './ocr/preprocess.js';
 import { createWorkerPool, initWorkers, terminateWorkers, recognizeWithPoolParams } from './ocr/pool.js';
 import { perfMeasureAsync } from './ui/perf.js';
@@ -23,10 +23,6 @@ export async function runCalibrate(file, ui) {
     const page = await pdf.getPage(2);
     const [{ canvas: pageCanvasEl, boxes: boxesFromRender }] = await perfMeasureAsync('calib:render', async () => await renderPageToCanvasWithBoxes(page));
     let boxes = boxesFromRender;
-    if (!boxes || boxes.length === 0) {
-      const [svgBoxes] = await perfMeasureAsync('calib:svg-detect', async () => await extractImageBoxesFromPage(page));
-      boxes = svgBoxes;
-    }
     if (!boxes || boxes.length === 0) { ui.addLog('Calibrate: no receipts found on page 1.'); return; }
     ui.addLog(`Calibrate: using ${Math.min(4, boxes.length)} receipts on page 1`);
 
@@ -71,4 +67,3 @@ export async function runCalibrate(file, ui) {
     ui.addLog('Calibrate: failed — ' + (e?.message || String(e)));
   }
 }
-

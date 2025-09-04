@@ -5,8 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Receipts OCR — SUMA Total (Client‑side)</title>
     <link rel="stylesheet" href="index.css" />
-    <!-- pdf.js (UMD/legacy for simpler worker setup) -->
-    <script src="https://unpkg.com/pdfjs-dist@3.10.111/build/pdf.js"></script>
+    <!-- pdf.js v5 (ESM) -->
+    <script type="module">
+      // Import modern ESM build from CDN and configure worker (.mjs)
+      import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.min.mjs';
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.4.149/pdf.worker.min.mjs';
+      // Expose for existing code using window.pdfjsLib
+      window.pdfjsLib = pdfjsLib;
+    </script>
     <!-- tesseract.js v2 (stable API for worker pool) -->
     <script src="https://unpkg.com/tesseract.js@2.1.5/dist/tesseract.min.js"></script>
   </head>
@@ -61,12 +67,7 @@
       </section>
     </main>
 
-    <script>
-      // Configure pdf.js worker (legacy UMD build)
-      if (window['pdfjsLib']) {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.10.111/build/pdf.worker.js';
-      }
-    </script>
-    <script type="module" src="/src/main.js"></script>
+    <!-- pdf.js is configured above via ESM import -->
+    <script type="module" src="./src/main.js"></script>
   </body>
   </html>

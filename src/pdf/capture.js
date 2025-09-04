@@ -138,38 +138,3 @@ export async function renderPageToCanvasWithBoxes(page, scale = RENDER_SCALE) {
   try { console.debug('render capture boxes:', { recorded: recorded.length, merged: merged.length, kept: boxes.length }); } catch {}
   return { canvas, boxes };
 }
-
-export async function extractImageBoxesFromPage(page, scale = RENDER_SCALE) {
-  try {
-    const viewport = page.getViewport({ scale });
-    if (!window.pdfjsLib || !window.pdfjsLib.SVGGraphics) return [];
-    const opList = await page.getOperatorList();
-    const svgGfx = new window.pdfjsLib.SVGGraphics(page.commonObjs, page.objs);
-    const svg = await svgGfx.getSVG(opList, viewport);
-    const host = document.createElement('div');
-    host.style.position = 'absolute'; host.style.left = '-10000px'; host.style.top = '-10000px';
-    host.style.width = viewport.width + 'px'; host.style.height = viewport.height + 'px';
-    host.style.pointerEvents = 'none'; host.style.opacity = '0';
-    host.appendChild(svg); document.body.appendChild(host);
-    const boxes = [];
-    svg.querySelectorAll('image').forEach(img => {
-      try {
-        const bb = img.getBBox(); const m = img.getCTM(); if (!bb || !m) return;
-        const pts = [ { x: bb.x, y: bb.y }, { x: bb.x + bb.width, y: bb.y }, { x: bb.x, y: bb.y + bb.height }, { x: bb.x + bb.width, y: bb.y + bb.height } ]
-          .map(p => ({ x: m.a * p.x + m.c * p.y + m.e, y: m.b * p.x + m.d * p.y + m.f }));
-        const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
-        const x = Math.round(Math.min(...xs)); const y = Math.round(Math.min(...ys));
-        const w = Math.round(Math.max(...xs) - Math.min(...xs));
-        const h = Math.round(Math.max(...ys) - Math.min(...ys));
-        if (w > 10 && h > 10) boxes.push({ x, y, w, h });
-      } catch {}
-    });
-    host.remove();
-    const minArea = viewport.width * viewport.height * 0.02; // 2%
-    return boxes.filter(b => (b.w * b.h) >= minArea).sort((a, b) => (a.y - b.y) || (a.x - b.x));
-  } catch (e) {
-    console.warn('extractImageBoxesFromPage failed:', e);
-    return [];
-  }
-}
-

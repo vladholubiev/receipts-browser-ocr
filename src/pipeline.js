@@ -1,5 +1,5 @@
 import { RENDER_SCALE, MAX_OCR_WIDTH, WORKERS, SUMA_PSM, SUMA_WHITELIST, DEFAULT_PSM, OCR_WHITELIST } from './config.js';
-import { loadPDF, renderPageToCanvasWithBoxes, extractImageBoxesFromPage } from './pdf/capture.js';
+import { loadPDF, renderPageToCanvasWithBoxes } from './pdf/capture.js';
 import { cropCanvas, preprocessForOCR, computeFullReceipt, cropSumaStripFromReceipt, toSmallBinary } from './ocr/preprocess.js';
 import { createWorkerPool, initWorkers, terminateWorkers, recognizeWithPoolParams } from './ocr/pool.js';
 import { perfAdd, perfMeasureAsync, perfSummaryLines } from './ui/perf.js';
@@ -81,9 +81,10 @@ export async function runPipeline(file, ui, cancelToken = { cancelled: false }) 
       const [{ canvas: pageCanvasEl, boxes: boxesFromRender }, tRender] = await perfMeasureAsync('page:render+capture', async () => await renderPageToCanvasWithBoxes(page, RENDER_SCALE));
       ui.progress.setMeta(`Page ${pageNum}/${pagesTotal}`);
 
-      let boxes = boxesFromRender; let tDetectSvg = 0;
-      if (!boxes || boxes.length === 0) { const [svgBoxes, tSvg] = await perfMeasureAsync('page:svg-detect', async () => await extractImageBoxesFromPage(page, RENDER_SCALE)); boxes = svgBoxes; tDetectSvg = tSvg; }
-      if (!boxes || boxes.length === 0) { ui.addLog(`Page ${pageNum}: found 0 image boxes — using fallback splitter`); }
+      let boxes = boxesFromRender;
+      if (!boxes || boxes.length === 0) {
+        ui.addLog(`Page ${pageNum}: found 0 image boxes — using fallback splitter`);
+      }
 
       // Fallback to heuristic 2x2 split with gutters if we have no image boxes
       if (!boxes || boxes.length === 0) {
@@ -140,8 +141,8 @@ export async function runPipeline(file, ui, cancelToken = { cancelled: false }) 
       ui.progress.tick(1);
       ui.progress.setMeta(`Page ${Math.min(ui.steps.progress.done, pagesTotal)}/${pagesTotal}  |  Sum: ${grandTotal.toFixed(2)}`);
 
-      const renderMs = Math.round(tRender), detectMs = Math.round(tDetectSvg);
-      ui.addLog(`Perf p${pageNum}: render ${renderMs}ms, detect ${detectMs}ms`);
+      const renderMs = Math.round(tRender);
+      ui.addLog(`Perf p${pageNum}: render ${renderMs}ms`);
     }
 
     await perfMeasureAsync('workers:terminate', async () => await terminateWorkers(pool));
@@ -228,4 +229,3 @@ function splitIntoReceiptsCanvas(pageCanvas) {
     { x: sx, y: sy, w: W - sx, h: H - sy },
   ];
 }
-
