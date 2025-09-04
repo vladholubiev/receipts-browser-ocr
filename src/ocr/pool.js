@@ -15,7 +15,7 @@ export function createWorkerPool(n, onLog) {
   };
 }
 
-export async function initWorkers(pool, lang = 'eng+pol') {
+export async function initWorkers(pool, lang = 'eng') {
   const T = window.Tesseract;
   if (pool.mode === 'single') {
     pool.schedulerSingle = T.createScheduler();
@@ -29,8 +29,9 @@ export async function initWorkers(pool, lang = 'eng+pol') {
     pool.schedulerSingle.addWorker(w);
     pool.workersSingle.push(w);
   } else {
-    const roiCount = Math.max(1, Math.floor(pool.n * 0.6));
-    const fullCount = Math.max(1, pool.n - roiCount);
+    // Favor ROI workers heavily: ROI = N-1, FULL = 1
+    const roiCount = Math.max(1, pool.n - 1);
+    const fullCount = 1;
 
     pool.schedulerROI = T.createScheduler();
     pool.schedulerFull = T.createScheduler();

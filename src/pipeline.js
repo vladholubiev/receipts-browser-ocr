@@ -79,7 +79,7 @@ export async function runPipeline(file, ui, cancelToken = { cancelled: false }) 
       if (cancelToken.cancelled) break;
       const page = await pdf.getPage(pageNum);
       const [{ canvas: pageCanvasEl, boxes: boxesFromRender }, tRender] = await perfMeasureAsync('page:render+capture', async () => await renderPageToCanvasWithBoxes(page, RENDER_SCALE));
-      ui.progress.setMeta(`Page ${pageNum}/${pagesTotal}`);
+      ui.progress.setCounter(`Page ${pageNum}/${pagesTotal}`);
 
       let boxes = boxesFromRender;
       if (!boxes || boxes.length === 0) {
@@ -130,7 +130,7 @@ export async function runPipeline(file, ui, cancelToken = { cancelled: false }) 
         perPageTexts[idx] = text || ''; sumaLines[idx] = line || '';
         if (amount != null) { grandTotal += amount; ui.addSumLog(amount, line); amounts[idx] = amount; }
         else { missingCount++; ui.addLog(`Page ${pageNum} receipt ${idx+1}: SUMA not found`); }
-        receiptCount++; ui.progress.setMeta(`Page ${pageNum}/${pagesTotal}  |  Sum: ${grandTotal.toFixed(2)}`);
+        receiptCount++; ui.progress.setCounter(`Page ${pageNum}/${pagesTotal}`);
         ui.updateTotals(receiptCount, missingCount, grandTotal, receiptsTotal);
       }));
       perfAdd('page:ocr-wall', performance.now() - tOcrStart);
@@ -139,7 +139,7 @@ export async function runPipeline(file, ui, cancelToken = { cancelled: false }) 
 
       pageCanvasEl.width = pageCanvasEl.height = 0;
       ui.progress.tick(1);
-      ui.progress.setMeta(`Page ${Math.min(ui.steps.progress.done, pagesTotal)}/${pagesTotal}  |  Sum: ${grandTotal.toFixed(2)}`);
+      ui.progress.setCounter(`Page ${Math.min(ui.steps.progress.done, pagesTotal)}/${pagesTotal}`);
 
       const renderMs = Math.round(tRender);
       ui.addLog(`Perf p${pageNum}: render ${renderMs}ms`);

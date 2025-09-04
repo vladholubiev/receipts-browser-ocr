@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Receipts OCR — SUMA Total (Client‑side)</title>
-    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="styles.css" />
     <!-- pdf.js v5 (ESM) -->
     <script type="module">
       // Import modern ESM build from CDN and configure worker (.mjs)
@@ -42,6 +42,7 @@
         <div class="step" id="step-progress">
           <div class="step-header">
             <span>Processing Pages</span>
+            <span class="counter" data-counter></span>
             <span class="eta" data-eta></span>
           </div>
           <div class="bar"><div class="fill" data-fill></div></div>
@@ -54,9 +55,11 @@
         </details>
 
         <div class="totals">
-          <div><strong>Receipts:</strong> <span id="countReceipts">0</span></div>
-          <div><strong>Missing SUMA:</strong> <span id="countMissing">0</span></div>
-          <div class="grand">TOTAL SUMA: <span id="totalSum">0.00</span></div>
+          <div class="totals-line">
+            <div class="totals-item"><strong>Receipts:</strong> <span id="countReceipts">0</span></div>
+            <div class="totals-item"><strong>Missing SUMA:</strong> <span id="countMissing">0</span></div>
+            <div class="totals-item grand"><strong>TOTAL SUMA:</strong> <span id="totalSum">0.00</span></div>
+          </div>
           <div class="sum-bar bar"><div id="sumFill" class="fill"></div></div>
         </div>
 

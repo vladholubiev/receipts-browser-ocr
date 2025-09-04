@@ -7,6 +7,7 @@ function stepElements(sel) {
   return {
     root,
     fill: root ? root.querySelector('[data-fill]') : null,
+    counter: root ? root.querySelector('[data-counter]') : null,
     meta: root ? root.querySelector('[data-meta]') : null,
     eta: root ? root.querySelector('[data-eta]') : null,
     startedAt: 0,
@@ -22,6 +23,7 @@ function setStepProgress(step, done, total) {
   if (step.fill) step.fill.style.width = pct + '%';
 }
 function setStepMeta(step, text) { if (step.meta) step.meta.textContent = text; }
+function setStepCounter(step, text) { if (step.counter) step.counter.textContent = text; }
 function setETA(step, text) { if (step.eta) step.eta.textContent = text; }
 
 function startStep(step, total, label) {
@@ -30,7 +32,8 @@ function startStep(step, total, label) {
   step.done = 0;
   setStepMeta(step, label || '');
   setStepProgress(step, 0, total);
-  setETA(step, '');
+  setETA(step, 'Time 0s | Remaining —');
+  setStepCounter(step, '');
 }
 function tickStep(step, inc = 1) {
   step.done += inc;
@@ -42,13 +45,13 @@ function tickStep(step, inc = 1) {
     const rate = step.done / Math.max(1e-6, elapsed);
     const remaining = step.total - step.done;
     const eta = remaining / Math.max(1e-6, rate);
-    setETA(step, `ETA ${formatDuration(eta)}`);
+    setETA(step, `Time ${formatDuration(elapsed)} | Remaining ${formatDuration(eta)}`);
   }
 }
 
 function formatDuration(sec) {
   if (!isFinite(sec) || sec < 0) return '';
-  if (sec < 1) return '1s';
+  if (sec < 1) return '0s';
   const m = Math.floor(sec / 60);
   const s = Math.round(sec % 60);
   return m > 0 ? `${m}m ${s}s` : `${s}s`;
@@ -70,7 +73,7 @@ export function createUI() {
     for (const key of Object.keys(steps)) {
       const s = steps[key];
       s.startedAt = 0; s.total = 0; s.done = 0;
-      setStepProgress(s, 0, 0); setStepMeta(s, ''); setETA(s, '');
+      setStepProgress(s, 0, 0); setStepMeta(s, ''); setETA(s, ''); setStepCounter(s, '');
     }
     if (steps.progress && steps.progress.meta) steps.progress.meta.textContent = 'Waiting for file…';
   }
@@ -156,6 +159,7 @@ export function createUI() {
       start: (total, label) => startStep(steps.progress, total, label),
       tick: (inc = 1) => tickStep(steps.progress, inc),
       setMeta: (text) => setStepMeta(steps.progress, text),
+      setCounter: (text) => setStepCounter(steps.progress, text),
     },
     addLog,
     addSumLog,
