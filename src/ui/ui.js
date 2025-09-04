@@ -79,11 +79,10 @@ export function createUI() {
   }
 
   function addLog(message, highlight = false) {
-    const div = document.createElement('div');
-    div.className = 'log-line' + (highlight ? ' hl' : '');
-    div.textContent = message;
-    if (logList.firstChild) logList.insertBefore(div, logList.firstChild);
-    else logList.appendChild(div);
+    if (!logList) return;
+    const prev = logList.value || '';
+    // Prepend newest messages to match previous behavior
+    logList.value = prev ? `${message}\n${prev}` : message;
   }
 
   function addSumLog(amount, line) {

@@ -71,9 +71,18 @@ section.right { padding: 0 0 12px; overflow: visible; }
 
 .logs { margin-top: 14px; }
 .logs-header { font-weight: 600; color: var(--muted); margin: 8px 0 6px; }
-.log-list { border: 1px solid #222634; background: #0a0c10; border-radius: 6px; padding: 6px; max-height: 160px; overflow: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; overflow-x: hidden; word-break: break-word; overflow-wrap: anywhere; }
-.log-line { padding: 2px 4px; }
-.log-line.hl { background: rgba(54,198,144,0.25); border-left: 3px solid #36c690; }
+textarea.log-list {
+  width: 100%;
+  height: 160px;
+  border: 1px solid #222634;
+  background: #0a0c10;
+  color: #dbe2ee;
+  border-radius: 6px;
+  padding: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  resize: vertical;
+}
 
 .preview-header { display: flex; align-items: center; justify-content: space-between; font-weight: 600; margin-bottom: 8px; }
 .feed { display: flex; flex-direction: column; gap: 16px; }
