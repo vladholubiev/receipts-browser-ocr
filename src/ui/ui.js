@@ -119,7 +119,14 @@ export function createUI() {
       container.className = 'thumb ' + (ok ? 'ok' : 'fail');
       const label = document.createElement('div');
       label.className = 'label';
-      label.textContent = ok ? `#${idx+1} ${amounts[idx].toFixed(2)}` : `#${idx+1} missing`;
+      const left = document.createElement('span');
+      left.className = 'left';
+      left.textContent = `#${idx+1}`;
+      const right = document.createElement('span');
+      right.className = 'right';
+      right.textContent = ok ? amounts[idx].toFixed(2) : 'missing';
+      label.appendChild(left);
+      label.appendChild(right);
       container.appendChild(label);
       const wrap = document.createElement('div');
       wrap.className = 'thumb-canvas-wrap';
@@ -128,12 +135,7 @@ export function createUI() {
       const ctx = c.getContext('2d');
       ctx.drawImage(cnv, 0, 0);
       wrap.appendChild(c);
-      if (sumaLines && sumaLines[idx]) {
-        const badge = document.createElement('div');
-        badge.className = 'line-badge';
-        badge.textContent = (sumaLines[idx] || '').replace(/\s+/g, ' ').trim();
-        wrap.appendChild(badge);
-      }
+      // Removed inline SUMA badge overlay to avoid duplication
       container.appendChild(wrap);
       const pre = document.createElement('pre');
       pre.className = 'ocr-pre';

@@ -79,9 +79,19 @@ section.right { padding: 0 0 12px; overflow: visible; }
 .post .canvas-wrap { position: relative; background: #0a0c10; border: 1px solid #222634; border-radius: 8px; overflow: hidden; }
 .post .thumbs { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 8px; }
 .post .thumbs .thumb { display: flex; flex-direction: column; gap: 6px; border: 2px solid #222634; border-radius: 8px; padding: 6px; background: #0a0c10; position: relative; }
-.post .thumbs .thumb.ok { border-color: #36c690; }
+.post .thumbs .thumb.ok { border-color: #222634; }
 .post .thumbs .thumb.fail { border-color: #ff4d4f; }
-.post .thumbs .thumb .label { font-weight: 700; font-size: 12px; color: #e7eaee; }
+.post .thumbs .thumb .label {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  font-weight: 700; font-size: 12px; color: #e7eaee;
+  background: #0a0c10; border: 1px solid #222634; border-radius: 6px; padding: 4px 6px;
+}
+.post .thumbs .thumb.ok .label {
+  background: rgba(54, 198, 144, 0.22);
+  border-color: #36c690; color: #e7fff4;
+}
+.post .thumbs .thumb .label .left { opacity: 0.95; }
+.post .thumbs .thumb .label .right { margin-left: auto; }
 .post .thumbs .thumb .thumb-canvas-wrap { position: relative; }
 .post .thumbs .thumb canvas { width: 100%; background: #0a0c10; border-radius: 6px; display: block; }
 .post .thumbs .thumb .line-badge { position: absolute; left: 6px; bottom: 6px; background: #000; border: 1px solid rgba(77, 163, 255, 0.9); color: #cfe3ff; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11px; padding: 2px 4px; border-radius: 4px; max-width: calc(100% - 12px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
